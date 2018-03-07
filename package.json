@@ -28,7 +28,7 @@
     "bluebird": "^3.0.5",
     "chalk": "^1.1.1",
     "cheerio": "^0.22.0",
-    "clean-css": "^3.4.8",
+    "clean-css": "^4.1.11",
     "cli": "^1.0.0",
     "debug": "^2.2.0",
     "filter-css": "^0.1.0",
