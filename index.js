@@ -1,18 +1,23 @@
 'use strict';
-var path = require('path');
-var fs = require('fs-extra');
-var _ = require('lodash');
-var sourceInliner = require('inline-critical');
-var Bluebird = require('bluebird');
-var through2 = require('through2');
-var PluginError = require('gulp-util').PluginError;
-var replaceExtension = require('gulp-util').replaceExtension;
+const path = require('path');
+const fs = require('fs-extra');
+const assign = require('lodash/assign');
+const defaults = require('lodash/defaults');
+const isFunction = require('lodash/isFunction');
+const isObject = require('lodash/isObject');
+const intersection = require('lodash/intersection');
+const keys = require('lodash/keys');
 
-var core = require('./lib/core');
-var file = require('./lib/file-helper');
-var inliner = require('./lib/inline-styles');
+const chalk = require('chalk');
+const sourceInliner = require('inline-critical');
+const Bluebird = require('bluebird');
+const through2 = require('through2');
+const PluginError = require('plugin-error');
+const replaceExtension = require('replace-ext');
 
-Bluebird.promisifyAll(fs);
+const {cleanup} = require('./lib/gc');
+const core = require('./lib/core');
+const file = require('./lib/file-helper');
 
 /**
  * Normalize options
@@ -24,7 +29,7 @@ function prepareOptions(opts) {
         opts = {};
     }
 
-    var options = _.defaults(opts, {
+    const options = defaults(opts, {
         base: file.guessBasePath(opts),
         dimensions: [{
             height: opts.height || 900,
@@ -32,14 +37,35 @@ function prepareOptions(opts) {
         }]
     });
 
-    // set dest relative to base if isn't specivied absolute
+    // Set dest relative to base if isn't specivied absolute
     if (options.dest && !path.isAbsolute(options.dest)) {
         options.dest = path.join(options.base, options.dest);
     }
 
-    // set dest relative to base if isn't specivied absolute
+    // Set dest relative to base if isn't specivied absolute
     if (options.destFolder && !path.isAbsolute(options.destFolder)) {
         options.destFolder = path.join(options.base, options.destFolder);
+    }
+
+    // Set options for inline-critical
+    options.inline = Boolean(options.inline) && assign({
+        minify: opts.minify || false,
+        extract: opts.extract || false,
+        basePath: opts.base || process.cwd()
+    }, (isObject(options.inline) && options.inline) || {});
+
+    // Set penthouse options
+    options.penthouse = assign({}, {
+        forceInclude: opts.include || [],
+        timeout: opts.timeout || 30000,
+        maxEmbeddedBase64Length: opts.maxImageFileSize || 10240
+    }, options.penthouse || {});
+
+    // Show overwrite warning if penthouse params url, css, witdh or height are present
+    const checkOpts = intersection(keys(options.penthouse), ['url', 'css', 'width', 'height']);
+    if (checkOpts.length > 0) {
+        console.warn(chalk.yellow('Detected presence of penthouse options:'), checkOpts.join(', '));
+        console.warn(chalk.yellow('These options will be overwritten by critical during the process.'));
     }
 
     return options;
@@ -55,117 +81,58 @@ function prepareOptions(opts) {
 exports.generate = function (opts, cb) {
     opts = prepareOptions(opts);
 
-    // generate critical css
-    var corePromise = core.generate(opts);
+    // Generate critical css
+    let corePromise = core.generate(opts);
 
-    // @deprecated
-    // should be removed in next major release
+    // Store generated css
     if (opts.styleTarget) {
-        corePromise.then(function (output) {
-            var file = path.resolve(opts.styleTarget);
-            var dir = path.dirname(file);
-            return fs.ensureDirAsync(dir).then(function () {
-                return fs.writeFileAsync(path.resolve(opts.styleTarget), output);
-            });
-        });
+        corePromise = corePromise.then(output => fs.outputFile(path.resolve(opts.styleTarget), output).then(() => output));
     }
 
-    // inline
+    // Inline
     if (opts.inline) {
-        corePromise = Bluebird.props({
-            file: file.getVinylPromise(opts),
-            css: corePromise
-        }).then(function (result) {
-            return sourceInliner(result.file.contents.toString(), result.css, {
-                minify: opts.minify || false,
-                extract: opts.extract || false,
-                basePath: opts.base || process.cwd()
-            });
-        });
+        corePromise = Promise.all([file.getVinylPromise(opts), corePromise])
+            .then(([file, css]) => sourceInliner(file.contents.toString(), css, opts.inline));
     }
 
-    // save to file
+    // Save to file
     if (opts.dest) {
-        corePromise = corePromise.then(function (output) {
-            var file = path.resolve(opts.dest);
-            var dir = path.dirname(file);
-            return fs.ensureDirAsync(dir).then(function () {
-                return fs.writeFileAsync(path.resolve(opts.dest), output);
-            }).then(function () {
-                return output;
-            });
-        });
+        corePromise = corePromise.then(output => fs.outputFile(path.resolve(opts.dest), output).then(() => output));
     }
 
-    // return promise if callback is not defined
-    if (_.isFunction(cb)) {
-        corePromise.catch(function (err) {
+    // Return promise if callback is not defined
+    if (isFunction(cb)) {
+        corePromise.catch(err => { // eslint-disable-line promise/valid-params
+            cleanup();
             cb(err);
             throw new Bluebird.CancellationError();
-        }).then(function (output) {
+        }).then(output => {
+            cleanup();
             cb(null, output.toString());
-        }).catch(Bluebird.CancellationError, function () {
-        }).done();
+        }).catch(Bluebird.CancellationError, () => {
+            console.log('Canceled due to an error');
+            /* Everything already done */
+        });
     } else {
-        return corePromise;
+        return corePromise.then(output => {
+            cleanup();
+            return output;
+        });
     }
 };
 
 /**
- * deprecated will be removed in the next version
- * @param opts
- * @param cb
- * @returns {Promise}|undefined
+ * Deprecated has been removed
  */
-exports.generateInline = function (opts, cb) {
-    opts.inline = true;
-    if (opts.htmlTarget) {
-        opts.dest = opts.htmlTarget;
-    } else if (opts.styleTarget) {
-        // return error
-    }
-
-    return exports.generate(opts, cb);
+exports.generateInline = function () {
+    throw new Error('"generateInline" has been removed. Use "generate" with the inline option instead. https://goo.gl/7VbE4b');
 };
 
 /**
- * Critical path CSS inlining
- * @param  {object} opts Options
- * @param  {function} cb Callback
- * @accepts src, base, dest
- * @deprecated
+ * Deprecated has been removed
  */
-exports.inline = function (opts, cb) {
-    opts = opts || {};
-    cb = cb || function () {};
-
-    if (!opts.src || !opts.base) {
-        throw new Error('A valid source and base path are required.');
-    }
-
-    // Inline the critical path CSS
-    fs.readFile(path.join(opts.base, opts.src), function (err, data) {
-        if (err) {
-            cb(err);
-            return;
-        }
-
-        var out = inliner(data, opts);
-
-        if (opts.dest) {
-            // Write HTML with inlined CSS to dest
-            fs.writeFile(path.resolve(opts.dest), out, function (err) {
-                if (err) {
-                    cb(err);
-                    return;
-                }
-
-                cb(null, out.toString());
-            });
-        } else {
-            cb(null, out.toString());
-        }
-    });
+exports.inline = function () {
+    throw new Error('"inline" has been removed. Consider using "inline-critical" instead. https://goo.gl/MmTrUZ');
 };
 
 /**
@@ -175,7 +142,7 @@ exports.inline = function (opts, cb) {
  * @returns {*}
  */
 exports.stream = function (opts) {
-    // return stream
+    // Return stream
     return through2.obj(function (file, enc, cb) {
         if (file.isNull()) {
             return cb(null, file);
@@ -185,21 +152,21 @@ exports.stream = function (opts) {
             return this.emit('error', new PluginError('critical', 'Streaming not supported'));
         }
 
-        var options = _.assign(opts || {}, {
+        const options = assign(opts || {}, {
             src: file
         });
 
-        exports.generate(options, function (err, data) {
+        exports.generate(options, (err, data) => {
             if (err) {
                 return cb(new PluginError('critical', err.message));
             }
 
-            // rename file if not inlined
+            // Rename file if not inlined
             if (!opts.inline) {
                 file.path = replaceExtension(file.path, '.css');
             }
 
-            file.contents = new Buffer(data);
+            file.contents = Buffer.from(data);
             cb(err, file);
         });
     });

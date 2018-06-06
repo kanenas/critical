@@ -1,6 +1,6 @@
 {
   "name": "critical",
-  "version": "0.8.0",
+  "version": "1.3.3",
   "description": "Extract & Inline Critical-path CSS from HTML",
   "author": "Addy Osmani",
   "license": "Apache-2.0",
@@ -14,7 +14,6 @@
     "lib"
   ],
   "bin": "cli.js",
-  "preferGlobal": true,
   "keywords": [
     "critical",
     "path",
@@ -22,54 +21,55 @@
     "optimization"
   ],
   "engines": {
-    "node": ">=4.0"
+    "node": ">=6.4.0"
   },
   "dependencies": {
-    "bluebird": "^3.0.5",
-    "chalk": "^1.1.1",
-    "cheerio": "^0.22.0",
-    "clean-css": "^3.4.8",
-    "cli": "^1.0.0",
-    "debug": "^2.2.0",
-    "filter-css": "^0.1.0",
-    "finalhandler": "^0.5.0",
-    "fs-extra": "^0.30.0",
-    "get-port": "^2.1.0",
-    "get-stdin": "^5.0.0",
-    "gulp-util": "^3.0.2",
-    "imageinliner": "^0.2.3",
-    "indent-string": "^3.0.0",
-    "inline-critical": "^2.1.5",
-    "lodash": "^4.0.0",
-    "meow": "^3.3.0",
-    "mime-types": "^2.1.6",
-    "oust": "^0.3.0",
-    "parseurl": "^1.3.0",
-    "penthouse": "^0.10.0",
-    "postcss": "^5.0.5",
-    "postcss-image-inliner": "^1.0.1",
-    "request": "^2.61.0",
-    "serve-static": "^1.10.0",
-    "slash": "^1.0.0",
-    "tempfile": "^1.1.0",
-    "through2": "^2.0.0",
-    "tmp": "0.0.29",
-    "vinyl": "^2.0.0"
+    "async-exit-hook": "^2.0.1",
+    "bluebird": "^3.5.1",
+    "chalk": "^2.3.0",
+    "clean-css": "^4.1.9",
+    "debug": "3.1.0",
+    "filter-css": "^0.1.2",
+    "fs-extra": "^6.0.1",
+    "get-port": "^3.2.0",
+    "get-stdin": "^6.0.0",
+    "got": "^8.3.0",
+    "group-args": "^0.1.0",
+    "indent-string": "^3.2.0",
+    "inline-critical": "^4.0.0",
+    "lodash": "^4.17.5",
+    "meow": "^5.0.0",
+    "mime-types": "^2.1.17",
+    "oust": "^0.4.0",
+    "penthouse": "1.5.0",
+    "plugin-error": "^1.0.1",
+    "postcss": "^6.0.17",
+    "postcss-image-inliner": "^2.0.0",
+    "replace-ext": "^1.0.0",
+    "slash": "^2.0.0",
+    "tempy": "^0.2.1",
+    "through2": "^2.0.3",
+    "vinyl": "^2.1.0"
   },
   "devDependencies": {
-    "async": "^2.0.1",
-    "chai": "^3.0.0",
-    "connect": "^3.4.0",
-    "mocha": "^3.0.0",
-    "mockery": "^2.0.0",
+    "async": "^2.6.0",
+    "chai": "^4.1.2",
+    "finalhandler": "^1.1.0",
+    "mocha": "5.2.0",
+    "mockery": "^2.1.0",
     "normalize-newline": "^3.0.0",
-    "read-package-json": "^2.0.0",
-    "stream-array": "^1.0.1",
-    "stream-assert": "^2.0.2",
-    "vinyl-source-stream": "^1.0.0",
-    "xo": "^0.17.0"
+    "nsp": "^3.1.0",
+    "read-package-json": "^2.0.12",
+    "serve-static": "^1.13.1",
+    "stream-array": "^1.1.2",
+    "stream-assert": "^2.0.3",
+    "vinyl-source-stream": "^2.0.0",
+    "xo": "0.21.1"
   },
   "xo": {
-    "space": 4
+    "space": 4,
+    "rules": {
+      "valid-jsdoc": "off"
+    }
   }
 }

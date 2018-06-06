@@ -1,4 +1,174 @@
 
+v1.3.3 / 2018-06-06
+===================
+
+  * Bump dependencies
+  * Docs: fix typo (#310)
+  * Reduced vulnerabilities [#308]
+
+v1.3.2 / 2018-05-15
+==================
+
+  * switched to async-exit-hook
+
+v1.3.1 / 2018-05-14
+==================
+
+  * Bump dependencies
+  * Removed process.exit on cleanup
+  * Adding html-webpack-critical-plugin to README (#306)
+
+v1.3.0 / 2018-05-02
+===================
+
+  * Add basic auth option [#295]
+
+v1.2.2 / 2018-04-02
+===================
+
+  * Improved handling of protocol-relative asset urls [#288]
+  * Adjust test files according to [#293]
+  * Improve error reporting [#258]
+  * Replace gutil by fancy-log [#297]
+  * Update README.md [#296]
+
+v1.2.1 / 2018-03-26
+===================
+
+  * Add license file
+
+v1.2.0 / 2018-03-19
+===================
+
+  * Allow external stylesheets passed as css option [#290]
+  * Add Tests for #277
+
+v1.1.1 / 2018-03-15
+==================
+
+  * Bump dependencies
+
+v1.1.0 / 2017-12-02
+===================
+
+  * 1.1.0
+  * Remove temporary files
+  * Bump inline-critical
+  * Fix corrupted 'File.contents' [#191,#218]
+
+v1.0.0 / 2017-11-06
+===================
+
+  * 1.0.0
+  * Bump dependencies
+  * Removed deprecated methods
+  * Don't enforce strict SSL for external assets [#171]
+  * Allow http 2xx response codes [#244]
+  * Replace '|' with its HTML character entity reference (#248)
+  * Headless chrome (#246)
+  * Add "folder" option to readme [#245]
+
+n.n.n / 2017-12-02
+==================
+
+
+v1.0.0 / 2017-11-06
+===================
+
+  * 1.0.0
+  * Bump dependencies
+  * Removed deprecated methods
+  * Don't enforce strict SSL for external assets [#171]
+  * Allow http 2xx response codes [#244]
+  * Replace '|' with its HTML character entity reference (#248)
+  * Headless chrome (#246)
+  * Add "folder" option to readme [#245]
+
+v0.9.1 / 2017-09-04
+===================
+
+  * 0.9.1
+  * Appveyor tweaks
+  * Use yarn with appveyor
+  * some appveyor tweaks
+  * Added package missing in appveyor
+  * Remove appveyor cache
+  * Try to reinstall "css" dependencies
+  * Upgrade Penthouse
+  * Update readme according to #220
+  * Version bump
+
+v0.9.0 / 2017-07-19
+===================
+
+  * Bump dependencies
+  * Library options (#178)
+  * Ignore print styles (#113) (#221)
+  * Prefer let & const + arrow functions
+  * Run tests on node.js 8
+  * Support for passing CSS files as Vinyl objects. (#204)
+
+v0.8.4 / 2017-03-01
+==================
+
+  * Better remote handling (#198)
+  * Bump inline-critical
+
+v0.8.3 / 2017-02-17
+===================
+
+  * Fixed multi-dimension critical-path CSS
+
+v0.8.2 / 2017-02-11
+===================
+
+  * Bump dependencies
+  * Update README.md
+
+v0.8.1 / 2016-11-24
+==================
+
+  * Added missing comma
+  * Add tmpfile to garbage collector
+  * Bump dependencies
+  * Vinyl (#120)
+
+v0.8.0 / 2016-08-30
+===================
+
+  * Revise production-use messaging.
+  * Consistent CSS capitalization in README.
+  * Remove object.assign; require node.js 4.
+  * Fix all tests to run on Windows.
+  * Enforce LF.
+  * Fix xo errors.
+  * Update dependencies.
+  * Fix test failures. (#155)
+  * Travis: add explicitly node.js 4 and 6. (#154)
+  * Update .gitignore.
+  * package.json: remove duplicate dep. (#153)
+  * Remove JSHint leftovers. (#152)
+  * Update README.md (#151)
+  * Update appveyor.yml (#150)
+  * added penthouse timeout option (#140)
+  * CSS Rel Preload support (#129)
+
+v0.7.3 / 2016-05-30
+===================
+
+  * Bump package.json version
+  * Add test for 404 case
+  * Remove trailing whitespace
+  * Fix silly typo
+  * Ignore 404 requests, reject promise with Error not String
+  * Fixed #130
+  * Better error message for unresolved css files
+  * cli: exit after stdout.write
+  * Remove uncaughtException listener log error instead
+  * Fixed import-order
+  * Bump dependencies
+  * Added changelog (#123)
+
 v0.7.2 / 2016-03-17
 ===================
 
@@ -70,7 +240,7 @@ v0.6.0 / 2015-07-07
   * minor package.json tweaks
   * Bump devDependencies
   * Correct expectation for adaptive
-  * Updatet tests for new clean-css 3.2.7
+  * Updated tests for new clean-css 3.2.7
   * some cleanup
   * Bump dependencies
   * Update README.md
