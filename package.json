@@ -6,7 +6,9 @@
   "license": "Apache-2.0",
   "repository": "addyosmani/critical",
   "scripts": {
-    "test": "xo && mocha test/*.js --timeout 100000"
+    "test": "xo && mocha test/*.js --timeout 100000",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "files": [
     "cli.js",
@@ -49,7 +51,8 @@
     "slash": "^2.0.0",
     "tempy": "^0.2.1",
     "through2": "^2.0.3",
-    "vinyl": "^2.1.0"
+    "vinyl": "^2.1.0",
+    "snyk": "^1.88.0"
   },
   "devDependencies": {
     "async": "^2.6.0",
@@ -71,5 +74,6 @@
     "rules": {
       "valid-jsdoc": "off"
     }
-  }
+  },
+  "snyk": true
 }
