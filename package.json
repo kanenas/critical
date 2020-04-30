@@ -52,7 +52,7 @@
     "tempy": "^0.2.1",
     "through2": "^2.0.3",
     "vinyl": "^2.1.0",
-    "snyk": "^1.88.0"
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "async": "^2.6.0",
