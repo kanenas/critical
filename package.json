@@ -39,7 +39,7 @@
     "group-args": "^0.1.0",
     "indent-string": "^3.2.0",
     "inline-critical": "^4.0.0",
-    "lodash": "^4.17.12",
+    "lodash": "^4.17.17",
     "meow": "^5.0.0",
     "mime-types": "^2.1.17",
     "oust": "^0.5.0",
